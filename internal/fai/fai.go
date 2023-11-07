@@ -81,7 +81,7 @@ func (f *fAI) processFile(file string) {
 	}
 
 	// validate file
-	isValid, err := warc.IsValid(file, filepath.Join(f.tmpDir, "buffer"))
+	isValid, err := warc.IsValid(file, f.tmpDir)
 	if err != nil {
 		f.logger.Error("Failed to validate file", "file", file, "error", err)
 		return
