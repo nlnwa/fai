@@ -21,22 +21,28 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+const namespace = "fai"
+
 var filesize = promauto.NewHistogram(prometheus.HistogramOpts{
-	Name: "file_size_bytes",
-	Help: "Size of files in bytes.",
+	Namespace: namespace,
+	Name:      "file_size_bytes",
+	Help:      "Size of files in bytes.",
 	// 1MB, 100MB, 500MB, 1GB
 	Buckets: []float64{1000000, 100000000, 500000000, 1000000000},
 })
 
 var validationError = promauto.NewCounter(prometheus.CounterOpts{
-	Name: "validation_error",
-	Help: "Number of files with validation errors.",
+	Namespace: namespace,
+	Name:      "validation_errors_total",
+	Help:      "Number of files with validation errors.",
 })
 
+// ValidationError increments the validation error counter.
 func ValidationError() {
 	validationError.Inc()
 }
 
+// Size records the size of the given file.
 func Size(size int64) {
 	filesize.Observe(float64(size))
 }
