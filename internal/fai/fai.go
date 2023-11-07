@@ -127,7 +127,8 @@ func (f *fAI) processFile(file string) {
 
 	metrics.Size(fileSizeBytes)
 
-	f.logger.Info("Processed file", "file", newFile, "size", fileSizeBytes, "md5", md5sum, "valid", isValid)
+	name := filepath.Base(newFile)
+	f.logger.Info("Processed file", "name", name, "size", fileSizeBytes, "md5", md5sum, "valid", isValid)
 }
 
 // Run starts the FAI.
