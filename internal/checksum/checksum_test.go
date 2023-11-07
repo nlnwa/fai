@@ -18,6 +18,7 @@ package checksum
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -78,7 +79,7 @@ func TestCreateChecksumFile(t *testing.T) {
 	}
 
 	got := string(b)
-	want := wantHash + separator + testFile + "\n"
+	want := wantHash + separator + filepath.Base(testFile) + "\n"
 
 	if got != want {
 		t.Errorf("expected %s, got %s", want, got)

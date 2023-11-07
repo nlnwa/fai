@@ -21,6 +21,7 @@ import (
 	"encoding/hex"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 // MD5Sum returns the md5 checksum of the given file encoded as a hex string.
@@ -51,7 +52,7 @@ func CreateChecksumFile(file string, checksum string, extension string) (string,
 	}
 
 	checksumFile := file + extension
-	content := checksum + separator + file + "\n"
+	content := checksum + separator + filepath.Base(file) + "\n"
 
 	// Create checksum file
 	f, err := os.Create(checksumFile)
