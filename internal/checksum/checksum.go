@@ -41,7 +41,7 @@ func MD5Sum(filepath string) (string, error) {
 }
 
 // separator is used to separate the checksum from the filepath in the checksum file.
-const separator = "  "
+const separator = " *"
 
 // CreateChecksumFile creates a checksum file for the given file.
 // It returns the path to the created checksum file.
