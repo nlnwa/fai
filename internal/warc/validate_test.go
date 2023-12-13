@@ -21,8 +21,9 @@ import (
 )
 
 const (
-	validWarcFile   = "testdata/valid.warc.gz"
-	invalidWarcFile = "testdata/invalid.warc.gz"
+	validWarcFile     = "testdata/valid.warc.gz"
+	invalidWarcFile   = "testdata/invalid.warc.gz"
+	corruptedWarcFile = "testdata/corrupt.warc.gz"
 )
 
 func TestMain(m *testing.M) {
@@ -40,6 +41,10 @@ func TestIsValid(t *testing.T) {
 		},
 		{
 			file:    invalidWarcFile,
+			isValid: false,
+		},
+		{
+			file:    corruptedWarcFile,
 			isValid: false,
 		},
 	}

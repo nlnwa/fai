@@ -38,7 +38,10 @@ func IsValid(file, tmpDir string) (bool, error) {
 			return validation.Valid(), nil
 		}
 		if err != nil {
-			*validation = append(*validation, err)
+			if wr != nil {
+				defer wr.Close()
+			}
+			return false, nil
 		}
 		func() {
 			defer wr.Close()
