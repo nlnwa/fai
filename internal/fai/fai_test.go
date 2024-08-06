@@ -2,62 +2,61 @@ package fai
 
 import (
 	"context"
+	"errors"
 	"os"
-	"path/filepath"
 	"testing"
+
+	"github.com/nlnwa/fai/internal/queue"
 )
 
-// createTestFile creates a test file in the given directory
-func createTestFile(t *testing.T, dir string) *os.File {
-	t.Helper()
-	f, _ := os.CreateTemp(dir, "testfile")
-	return f
+func TestNew(t *testing.T) {
+	// Test glob pattern is invalid
+	_, err := New(
+		WithGlobPattern("["),
+	)
+	if err == nil {
+		t.Error("expected error when glob pattern is invalid")
+	}
 }
 
 func TestRun(t *testing.T) {
 	sourceDir := t.TempDir()
-	targetDir := t.TempDir()
+	var testFiles []*os.File
 
-	testFiles := []struct {
-		file        *os.File
-		expectedDir string
-		isValid     bool
-	}{
-		{
-			file:        createTestFile(t, sourceDir),
-			expectedDir: targetDir,
-		},
-		{
-			file:        createTestFile(t, sourceDir),
-			expectedDir: targetDir,
-		},
+	for range 10 {
+		f, _ := os.CreateTemp(sourceDir, "testfile")
+		testFiles = append(testFiles, f)
 	}
 
+	worker := func(path string) {
+		err := os.Remove(path)
+		if err != nil {
+			t.Errorf("failed to remove file: %v", err)
+		}
+	}
+
+	q := queue.NewWorkQueue(worker, len(testFiles))
+
 	fai, err := New(
-		WithConcurrency(len(testFiles)),
-		WithSleep(0),
+		WithSleep(0), // single pass
 		WithSourceDir(sourceDir),
-		WithValidTargetDir(targetDir),
-		WithInvalidTargetDir(targetDir),
-		WithTmpDir(t.TempDir()),
+		WithInspector(q.Add),
+		WithGlobPattern("testfile*"),
 	)
 	if err != nil {
 		t.Fatalf("failed to create fai: %v", err)
 	}
 
-	// run fai
+	// run fai (add files to queue)
 	fai.Run(context.Background())
+	// close queue and wait for all workers to finish
+	q.CloseAndWait()
 
 	for _, testFile := range testFiles {
-		// check that test file has been moved
-		_, err = os.Stat(filepath.Join(testFile.expectedDir, filepath.Base(testFile.file.Name())))
-		if err != nil {
-			t.Errorf("failed to stat test file '%v'", err)
-		}
-		// check that checksum file has been created and moved
-		_, err = os.Stat(filepath.Join(testFile.expectedDir, filepath.Base(testFile.file.Name())+".md5"))
-		if err != nil {
-			t.Errorf("failed to stat checksum file: %v", err)
+		// assert that test file is removed (as per worker function)
+		_, err = os.Stat(testFile.Name())
+		if !errors.Is(err, os.ErrNotExist) {
+			t.Errorf("test file still exists: %s", testFile.Name())
 		}
 	}
 }
