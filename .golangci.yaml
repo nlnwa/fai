@@ -1,5 +1,6 @@
 output:
-  format: github-actions
+  formats:
+    - format: colored-line-number
   print-issued-lines: true
   print-linter-name: true
   uniq-by-line: true
@@ -14,6 +15,7 @@ issues:
   max-same-issues: 0
 
 severity:
+  default-severity: error
   case-sensitive: true
 
 linters:
@@ -27,16 +29,15 @@ linters:
     - bodyclose
     - containedctx
     - cyclop
-    - deadcode
     - decorder
     - depguard
     - dogsled
     - dupl
     - dupword
+    - err113
     - errchkjson
     - execinquery
     - exhaustive
-    - exhaustivestruct
     - exhaustruct
     - exportloopref
     - forbidigo
@@ -53,11 +54,9 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
     - gofumpt
     - goheader
     - goimports
-    - golint
     - gomnd
     - gomoddirectives
     - gomodguard
@@ -65,18 +64,16 @@ linters:
     - gosec
     - gosmopolitan
     - grouper
-    - ifshort
     - importas
     - interfacebloat
-    - interfacer
     - ireturn
     - lll
     - loggercheck
     - maintidx
     - makezero
-    - maligned
     - mirror
     - misspell
+    - mnd
     - musttag
     - nakedret
     - nestif
@@ -86,7 +83,6 @@ linters:
     - noctx
     - nolintlint
     - nonamedreturns
-    - nosnakecase
     - nosprintfhostport
     - paralleltest
     - prealloc
@@ -95,9 +91,7 @@ linters:
     - reassign
     - revive
     - rowserrcheck
-    - scopelint
     - sqlclosecheck
-    - structcheck
     - stylecheck
     - tagalign
     - tagliatelle
@@ -109,7 +103,6 @@ linters:
     - unconvert
     - unparam
     - usestdlibvars
-    - varcheck
     - varnamelen
     - wastedassign
     - whitespace

@@ -17,11 +17,21 @@
 package metrics
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 const namespace = "fai"
+
+var duration = promauto.NewHistogram(prometheus.HistogramOpts{
+	Namespace: namespace,
+	Name:      "duration_seconds",
+	Help:      "Duration of operations in seconds.",
+	// 1s, 10s, 30s, 1m, 10m, 30m
+	Buckets: []float64{1, 10, 30, 60, 600, 1800},
+})
 
 var filesize = promauto.NewHistogram(prometheus.HistogramOpts{
 	Namespace: namespace,
@@ -31,18 +41,11 @@ var filesize = promauto.NewHistogram(prometheus.HistogramOpts{
 	Buckets: []float64{1000000, 100000000, 500000000, 1000000000},
 })
 
-var validationError = promauto.NewCounter(prometheus.CounterOpts{
-	Namespace: namespace,
-	Name:      "validation_errors_total",
-	Help:      "Number of files with validation errors.",
-})
-
-// ValidationError increments the validation error counter.
-func ValidationError() {
-	validationError.Inc()
-}
-
 // Size records the size of the given file.
 func Size(size int64) {
 	filesize.Observe(float64(size))
+}
+
+func Duration(d time.Duration) {
+	duration.Observe(float64(d))
 }

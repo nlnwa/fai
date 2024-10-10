@@ -45,7 +45,7 @@ func TestWorkQueue(t *testing.T) {
 	}
 
 	queue := NewWorkQueue(perJobFn, concurrency)
-	for i := 0; i < jobs; i++ {
+	for i := range jobs {
 		queue.Add(strconv.Itoa(i))
 	}
 
@@ -84,7 +84,7 @@ func TestAddSameJobToWorkQueue(t *testing.T) {
 	// since each job takes 10 ms to execute, only one job should be expected to have been
 	// executed because 100 jobs should have time to be added to the queue before the first
 	// job is finished
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		queue.Add("job")
 	}
 
