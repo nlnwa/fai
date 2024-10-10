@@ -3,28 +3,21 @@
 FAI loops trough files in a given directory that match a given pattern
 and for every matching file:
 
-- creates a checksum file
-- validates the file as a WARC-file
-- logs the name, size, checksum and validation status
-- updates a file size histogram metric and a validation error counter metric
-- moves the file and the corresponding checksum file to a target directory
+- uploads file to S3
+- updates a file size histogram metric and a upload duration metric
+- logs the name, size and etag
+- removes the file
 
 ```text
 Usage of fai:
-  -concurrency int
-        number of concurrent files processed (default [number of CPU cores])
-  -invalid-target-dir string
-        path to target directory where invalid files and their corresponding checksum files will be moved to
-  -metrics-port int
-        port to expose metrics on (default 8081)
-  -pattern string
-        glob pattern used to match filenames in source directory (default "*")
-  -sleep duration
-        sleep duration between directory listings, set to 0 to only do a single run (default 5s)
-  -source-dir string
-        path to source directory
-  -tmp-dir string
-        path to directory where temporary buffer files will be stored
-  -valid-target-dir string
-        path to target directory where valid files and their corresponding checksum files will be moved to
+      --concurrency int               number of files processed concurrently (default 16)
+      --dir string                    path to source directory
+      --metrics-port int              port to expose metrics on (default 8081)
+      --pattern string                glob pattern used to match filenames in source directory (default "*.warc.gz")
+      --s3-access-key-id string       access key ID
+      --s3-address string             s3 endpoint (address:port) (default "localhost:9000")
+      --s3-bucket-name string         name of bucket to upload files to
+      --s3-secret-access-key string   secret access key
+      --s3-token string               token to use for s3 authentication (optional)
+      --sleep duration                sleep duration between directory listings, set to 0 to only do a single pass (default 5s)
 ```
