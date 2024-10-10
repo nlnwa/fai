@@ -35,7 +35,7 @@ func NewWorkQueue(execute func(string), concurrency int) *workQueue {
 		hm:    make(map[string]struct{}, concurrency),
 	}
 
-	for i := 0; i < concurrency; i++ {
+	for range concurrency {
 		iw.wg.Add(1)
 		go func() {
 			defer iw.wg.Done()
